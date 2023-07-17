@@ -38,7 +38,7 @@ struct Promise
 	PromiseStatus Status = PromiseStatus::Pending;
 	TFunction<void (T)> Callback = nullptr;
 	bool HasCallback = false;
-	FHttpResponsePtr ResponsePtr;
+	FHttpResponsePtr ResponsePtr = nullptr;
 	T Value;
 	
 	TFunction<void (T)> GetOnSuccessCallback()
@@ -60,6 +60,7 @@ struct Promise
 		this->Value = ReturnValue;
 		
 		this->Status = PromiseStatus::Fulfilled;
+		
 		if(HasCallback)
 		{
 			Callback(Value);

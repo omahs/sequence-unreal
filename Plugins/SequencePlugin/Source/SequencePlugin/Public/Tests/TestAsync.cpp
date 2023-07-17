@@ -48,7 +48,7 @@ bool TestAsync::RunTest(const FString& Parameters)
 	SendAsync(MyFuture, Func).Wait();*/
 
 {
-		Promise<FString> MyPromise;
+		Promise<FString> MyPromise{};
 		
 		auto Content = FJsonBuilder().ToPtr()
 			->AddString("jsonrpc", "2.0")
@@ -64,23 +64,19 @@ bool TestAsync::RunTest(const FString& Parameters)
 			->WithContentAsString(Content)
 			->GetRequest();
 
-		auto Addy = &MyPromise;
-		auto Number = 1;
-		Number--;
-
-		Request->OnProcessRequestComplete().BindLambda([Addy](FHttpRequestPtr Req, FHttpResponsePtr Response, bool IsSuccessful)
+		Request->OnProcessRequestComplete().BindLambda([&MyPromise](FHttpRequestPtr Req, FHttpResponsePtr Response, bool IsSuccessful)
 		{
 			UE_LOG(LogTemp, Display, TEXT("Lambda called!"));
 			if(IsSuccessful)
 			{
-				Addy->OnSuccess(Response->GetContentAsString());
+				MyPromise.OnSuccess(Response->GetContentAsString());
 			}
 			else
 			{
-				Addy->OnFailure(Response);
+				MyPromise.OnFailure(Response);
 			}
 		});
-		Request->OnProcessRequestComplete().BindLambda([Number](FHttpRequestPtr Req, FHttpResponsePtr Response, bool IsSuccessful){1/Number;Hello();});
+		//Request->OnProcessRequestComplete().BindLambda([Number](FHttpRequestPtr Req, FHttpResponsePtr Response, bool IsSuccessful){1/Number;Hello();});
 		Request->ProcessRequest();
 
 		TFunction<int (FString)> Function = [](FString Content)
