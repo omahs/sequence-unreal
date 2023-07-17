@@ -8,11 +8,16 @@ enum ErrorType
 	EmptyResponse,
 	UnsupportedMethodOnChain,
 	RequestFail,
+	RequestTimeExceeded,
+
+
+	UnknownError,
 };
 
 class SequenceError
 {
 public:
+	SequenceError();
 	SequenceError(ErrorType Type, FString Message);
 	FString Message;
 	ErrorType Type;

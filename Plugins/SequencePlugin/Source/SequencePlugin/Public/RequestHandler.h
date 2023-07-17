@@ -33,4 +33,7 @@ public:
 
 	// Process
 	TFuture<FString> Process();
+
+	// Get
+	FHttpRequestPtr GetRequest();
 };

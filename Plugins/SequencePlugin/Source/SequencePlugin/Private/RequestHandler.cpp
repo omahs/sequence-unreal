@@ -79,6 +79,11 @@ TFuture<FString> URequestHandler::Process()
 	return Future;
 }
 
+FHttpRequestPtr URequestHandler::GetRequest()
+{
+	return Request;
+}
+
 
 
 
