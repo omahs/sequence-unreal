@@ -452,6 +452,7 @@ private:
 	FString StateToken = "";
 	FString Nonce = "";
 
+	const FString DeepLinkURLScheme = "sdk-powered-by-sequence";
 	const FString UrlScheme = "powered-by-sequence";
 	const FString RedirectURL = "https://3d41-142-115-54-118.ngrok-free.app/";
 	const FString BRedirectURL = "some text to check with";
@@ -531,7 +532,7 @@ private:
 
 	void ResetRetryEmailLogin();
 
-	FString GenerateSigninURL(const FString& AuthURL, const FString& ClientID) const;
+	FString GenerateSigninURL(const FString& AuthURL, const FString& ClientID, const FString& Method) const;
 
 	FString BuildAWSURL(const FString& Service, const FString& AWSRegion);
 

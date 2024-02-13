@@ -96,7 +96,7 @@ FString UAuthenticator::GetSigninURL(const ESocialSigninType& Type) const
 	
 	if (this->SSOProviderMap.Contains(Type))
 	{
-		SigninURL = this->GenerateSigninURL(this->SSOProviderMap[Type].URL, this->SSOProviderMap[Type].ClientID);
+		SigninURL = this->GenerateSigninURL(this->SSOProviderMap[Type].URL, this->SSOProviderMap[Type].ClientID,UEnum::GetValueAsString(Type));
 	}
 	else
 	{
@@ -104,18 +104,9 @@ FString UAuthenticator::GetSigninURL(const ESocialSigninType& Type) const
 		UE_LOG(LogTemp, Error, TEXT("No Entry for SSO type: [%s] in SSOProviderMap"),*SSOType);
 	}
 
-	//clear webcache here so signin will be clean eachtime!
-	if (this->PurgeCache)
-	{
-		if (const IWebBrowserSingleton* WebBrowserSingleton = IWebBrowserModule::Get().GetSingleton())
-		{
-			const TSharedPtr<IWebBrowserCookieManager> CookieManager = WebBrowserSingleton->GetCookieManager();
-			if (CookieManager.IsValid())
-			{
-				CookieManager->DeleteCookies();
-			}
-		}
-	}
+	//instead we will go out to a web browser
+	UE_LOG(LogTemp, Display, TEXT("SigninURL: %s"),*SigninURL);
+	FPlatformProcess::LaunchURL(*SigninURL, nullptr, nullptr);
 	
 	return SigninURL;
 }
@@ -141,10 +132,13 @@ void UAuthenticator::EmailLogin(const FString& EmailIn)
 	CognitoIdentityInitiateAuth(this->Cached_Email,this->WaasCredentials.GetCognitoClientId());
 }
 
-FString UAuthenticator::GenerateSigninURL(const FString& AuthURL, const FString& ClientID) const
+FString UAuthenticator::GenerateSigninURL(const FString& AuthURL, const FString& ClientID, const FString& Method) const
 {
 	//return FString::Printf(TEXT("%s?response_type=id_token&client_id=%s&redirect_uri=%s&scope=openid+profile+email&state=%s&nonce=%s"),*AuthURL,*ClientID,*this->RedirectURL,*this->StateToken, *this->Nonce);
-	return AuthURL +"?response_type=id_token&client_id="+ ClientID +"&redirect_uri="+ this->RedirectURL +"&scope=openid+profile+email&state="+ this->StateToken +"&nonce="+ this->Nonce;
+
+	const FString StateParam = "{"+this->DeepLinkURLScheme+"\"---\""+StateToken+Method+"}";
+	
+	return AuthURL +"?response_type=id_token&client_id="+ ClientID +"&redirect_uri="+ this->RedirectURL +"&scope=openid+profile+email&state="+ StateParam +"&nonce="+ this->Nonce;
 }
 
 FString UAuthenticator::BuildAWSURL(const FString& Service, const FString& AWSRegion)
