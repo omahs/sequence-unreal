@@ -20,6 +20,13 @@ public class SequencePlugin : ModuleRules
 				// ... add other private include paths required here ...
 			}
 			);
+
+
+        if (Target.Platform == UnrealTargetPlatform.Android)
+        {
+            PrivateDependencyModuleNames.Add( "Launch" );
+            AdditionalPropertiesForReceipt.Add("AndroidPlugin", Path.Combine(ModuleDirectory, "SequencePlugin_UPL_Android.xml"));
+        }
 			
 		
 		PublicDependencyModuleNames.AddRange(

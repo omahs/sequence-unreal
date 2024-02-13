@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root xmlns:android="http://schemas.android.com/apk/res/android">
+    <prebuildCopies>
+        <copyDir src="$S(PluginDir)/Private/Android/Java" dst="$S(BuildDir)/src/com/Plugins/SequencePlugin"/>
+    </prebuildCopies>
+
+    <proguardAdditions>
+        <insert>
+        -keep public class com.Plugins.SequencePlugin.AndroidNativeBridge {
+            native *;
+        }
+        </insert>
+    </proguardAdditions>
+
+    <androidManifestUpdates>
+        <loopElements tag="activity">
+            <setStringFromAttribute name="android:name" tag="$" result="activityName"/>
+            <setBoolIsEqual arg1="$S(activityName)" arg2="com.epicgames.unreal.GameActivity" result="isGameActivity"/>
+            <if condition="isGameActivity">
+                <true>
+                    <addAttribute tag="$" name="android:exported" value="true"/>
+                    <addElements>
+                        <intent-filter>
+                            <action android:name="android.intent.action.VIEW" />
+                            <category android:name="android.intent.category.DEFAULT" />
+                            <category android:name="android.intent.category.BROWSABLE" />
+                            <data android:scheme="sdk-powered-by-sequence"/>
+                        </intent-filter>
+                    </addElements>
+                </true>
+            </if>
+        </loopElements>
+    </androidManifestUpdates>
+
+    <gameActivityImportAdditions>
+        <insert>
+            import com.Plugins.SequencePlugin.AndroidNativeBridge;
+        </insert>
+    </gameActivityImportAdditions>
+
+    <gameActivityOnCreateAdditions>
+        <insert>
+            AndroidNativeBridge.onCreate(this);
+        </insert>
+    </gameActivityOnCreateAdditions>
+</root>
