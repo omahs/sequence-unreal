@@ -1,17 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <root xmlns:android="http://schemas.android.com/apk/res/android">
-    <prebuildCopies>
-        <copyDir src="$S(PluginDir)/Private/Android/Java" dst="$S(BuildDir)/src/com/Plugins/SequencePlugin"/>
-    </prebuildCopies>
-
-    <proguardAdditions>
-        <insert>
-        -keep public class com.Plugins.SequencePlugin.AndroidNativeBridge {
-            native *;
-        }
-        </insert>
-    </proguardAdditions>
-
     <androidManifestUpdates>
         <loopElements tag="activity">
             <setStringFromAttribute name="android:name" tag="$" result="activityName"/>
@@ -32,15 +20,30 @@
         </loopElements>
     </androidManifestUpdates>
 
-    <gameActivityImportAdditions>
+    <gameActivityClassAdditions>
         <insert>
-            import com.Plugins.SequencePlugin.AndroidNativeBridge;
-        </insert>
-    </gameActivityImportAdditions>
+            public native void nativeHandleDeepLink(String deeplink);
 
-    <gameActivityOnCreateAdditions>
-        <insert>
-            AndroidNativeBridge.onCreate(this);
+            private void handleDeepLinks() {
+                Intent intent = getIntent();
+
+                if (intent == null) {
+                    return;
+                }
+
+                String action = intent.getAction();
+                Uri data = intent.getData();
+
+                if (Intent.ACTION_VIEW.equals(action) &amp;&amp; data != null) {
+                    nativeHandleDeepLink(data.toString());
+                }
+            }
         </insert>
-    </gameActivityOnCreateAdditions>
+    </gameActivityClassAdditions>
+
+    <gameActivityOnResumeAdditions>
+        <insert>
+            handleDeepLinks();
+        </insert>
+    </gameActivityOnResumeAdditions>
 </root>

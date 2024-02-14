@@ -1,13 +1,16 @@
 #include "CoreMinimal.h"
 
 #if PLATFORM_ANDROID
-#include <Android/AndroidJNI.h>
-// declared in AndroidNativeBridge.java: public native void nativeHandleDeepLink(String deeplink);
-JNI_METHOD void Java_com_Plugins_SequencePlugin_AndroidNativeBridge_nativeHandleDeepLink(JNIEnv* jenv, jobject thiz, jstring deeplink)
-{
-    const char *javaDeepLink = jenv->GetStringUTFChars(deeplink, 0);
-    FString UEDeepLink = FString(UTF8_TO_TCHAR(javaDeepLink));
+#include "Android/AndroidJNI.h"
 
-    UE_LOG(LogTemp, Display, TEXT("Android deep link: %s"), *UEDeepLink);
+// declared in AndroidNativeBridge.java: public native void nativeHandleDeepLink(String deeplink);
+JNI_METHOD void Java_com_epicgames_unreal_GameActivity_nativeHandleDeepLink(JNIEnv* jenv, jobject thiz, jstring jdeeplink) 
+{
+    const char *deeplinkChars = jenv->GetStringUTFChars(deeplink, 0);
+    FString deeplink = FString(UTF8_TO_TCHAR(deeplinkChars));
+    
+    jenv->ReleaseStringUTFChars(jdeeplink, deeplinkChars);
+
+    UE_LOG(LogTemp, Display, TEXT("Android deep link: %s"), *deeplink);
 }
 #endif // PLATFORM_ANDROID

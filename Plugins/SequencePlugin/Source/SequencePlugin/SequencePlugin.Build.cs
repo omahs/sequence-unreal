@@ -25,7 +25,7 @@ public class SequencePlugin : ModuleRules
 
         if (Target.Platform == UnrealTargetPlatform.Android)
         {
-            PrivateDependencyModuleNames.Add( "Launch" );
+            PrivateDependencyModuleNames.Add("Launch");
             AdditionalPropertiesForReceipt.Add("AndroidPlugin", Path.Combine(ModuleDirectory, "SequencePlugin_UPL_Android.xml"));
         }
 			
