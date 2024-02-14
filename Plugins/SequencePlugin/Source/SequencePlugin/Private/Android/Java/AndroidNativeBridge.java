@@ -8,8 +8,8 @@ import com.epicgames.unreal.GameActivity;
 
 public class AndroidNativeBridge {
     public static native void nativeHandleDeepLink(String deeplink);
-
-    public static void onCreate(gameActivity GameActivity) {
+    
+    public static void onCreate(GameActivity gameActivity) {
         Intent intent = gameActivity.getIntent();
 
         if (intent == null) {
