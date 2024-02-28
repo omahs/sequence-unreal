@@ -1,13 +1,15 @@
 #include "NativeOAuth.h"
-#if PLATFORM_IOS
-#include "Native/iOS/iOSOAuth.h"
-#endif // PLATFORM_IOS
+#include "iOS/iOSOAuth.h"
 
-namespace NativeOAuth {
+
+	void testingFunction()
+	{
+		UE_LOG(LogTemp,Display,TEXT("Print some stuff"));
+	}
+	
 	void RequestAuthCode(const FString& providerUrl, const FString& redirectScheme)
 	{
 #if PLATFORM_IOS
-		iOSOAuth::iOS_RequestAuthCode(providerUrl, redirectScheme);
-#endif // PLATFORM_IOS
+		iOS_RequestAuthCode(providerUrl, redirectScheme);
+#endif 
 	}
-}
