@@ -33,7 +33,7 @@
         <insert>
         public native void nativeSequenceHandleDeepLink(String deepLinkUrl);
 
-        public static void AndroidThunkJava_SequenceRequestAuthCode(String providerUrl) {
+        public static void AndroidThunkJava_SequenceRequestAuth(String providerUrl) {
             sequenceOpenCustomTab(providerUrl);
         }
 

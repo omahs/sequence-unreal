@@ -107,7 +107,7 @@ FString UAuthenticator::GetSigninURL(const ESocialSigninType& Type) const
 
 	//instead we will go out to a web browser
 	UE_LOG(LogTemp, Display, TEXT("SigninURL: %s"),*SigninURL);
-	NativeOAuth::RequestAuthCode(*SigninURL);
+	NativeOAuth::RequestAuth(*SigninURL);
 	
 	return SigninURL;
 }

@@ -4,10 +4,10 @@
 #endif // PLATFORM_ANDROID
 
 namespace NativeOAuth {
-    void RequestAuthCode(const FString& providerUrl)
+    void RequestAuth(const FString& providerUrl)
     {
         #if PLATFORM_ANDROID
-        AndroidOAuth::AndroidThunkCpp_RequestAuthCode(providerUrl);
+        AndroidOAuth::AndroidThunkCpp_RequestAuth(providerUrl);
         #endif // PLATFORM_ANDROID
     }
 }

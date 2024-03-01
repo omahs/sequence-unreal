@@ -2,7 +2,7 @@
 
 #if PLATFORM_ANDROID
 namespace AndroidOAuth {
-    void AndroidThunkCpp_RequestAuthCode(const FString& providerUrl) 
+    void AndroidThunkCpp_RequestAuth(const FString& providerUrl) 
     {
         if (JNIEnv* jenv{FAndroidApplication::GetJavaEnv()})   
         {
@@ -10,7 +10,7 @@ namespace AndroidOAuth {
             jmethodID methodId{FJavaWrapper::FindStaticMethod(
                 jenv,
                 gameActivityClass, 
-                "AndroidThunkJava_SequenceRequestAuthCode", 
+                "AndroidThunkJava_SequenceRequestAuth", 
                 "(Ljava/lang/String;)V", 
                 false
             )};

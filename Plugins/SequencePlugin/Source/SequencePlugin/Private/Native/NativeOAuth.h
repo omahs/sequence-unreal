@@ -1,5 +1,5 @@
 #pragma once
 
 namespace NativeOAuth {
-    void RequestAuthCode(const FString& providerUrl);
+    void RequestAuth(const FString& providerUrl);
 }
