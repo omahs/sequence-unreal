@@ -1,16 +1,67 @@
 <?xml version="1.0" encoding="utf-8"?>
 <root xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <androidManifestUpdates>
+        <loopElements tag="activity">
+            <setStringFromAttribute name="android:name" tag="$" result="activityName"/>
+            <setBoolIsEqual arg1="$S(activityName)" arg2="com.epicgames.unreal.GameActivity" result="isGameActivity"/>
+            <if condition="isGameActivity">
+                <true>
+                    <addAttribute tag="$" name="android:exported" value="true"/>
+                    <addElements tag="$">
+                        <intent-filter>
+                            <action android:name="android.intent.action.VIEW" />
+                            <category android:name="android.intent.category.DEFAULT" />
+                            <category android:name="android.intent.category.BROWSABLE" />
+                            <data android:scheme="https"
+                                android:host="3d41-142-115-54-118.ngrok-free.app" 
+                                android:pathPrefix="/" />
+                        </intent-filter>
+                    </addElements>
+                </true>
+            </if>
+        </loopElements>
+    </androidManifestUpdates>
+
+    <gameActivityImportAdditions>
+        <insert>
+            import androidx.browser.customtabs.CustomTabsIntent;
+        </insert>
+    </gameActivityImportAdditions>
+
     <gameActivityClassAdditions>
         <insert>
-        public native void onSequenceAuthCodeResponse(String responseUrl);
+        public native void nativeSequenceHandleDeepLink(String deepLinkUrl);
 
-        public static void AndroidThunkJava_RequestSequenceAuthCode(String providerUrl, String redirectScheme) {
-            Log.debug("NativeOAuth: requesting auth code (providerUrl: " + providerUrl + ", redirectScheme: " + redirectScheme + ")");
+        public static void AndroidThunkJava_SequenceRequestAuthCode(String providerUrl) {
+            sequenceOpenCustomTab(providerUrl);
+        }
 
-            // webview goes here
+        private void sequenceOpenCustomTab(String url) {
+            CustomTabsIntent customTabsIntent = new CustomTabsIntent.Builder().build();
+            intent.launchUrl(this, Uri.parse(url));            
+        }
 
-            _activity.onSequenceAuthCodeResponse("pretend this is the redirect reponse url");
+        private void sequenceHandleDeepLinks() {
+            Intent intent = getIntent();
+
+            if (intent == null) {
+                return;
+            }
+
+            String action = intent.getAction();
+            Uri data = intent.getData();
+
+            if (Intent.ACTION_VIEW.equals(action) &amp;&amp; data != null) {
+                _activity.nativeSequenceHandleDeepLink(data.toString());
+            }            
         }
         </insert>
     </gameActivityClassAdditions>
+
+    <gameActivityOnResumeAdditions>
+        <insert>
+            sequenceHandleDeepLinks();
+        </insert>
+    </gameActivityOnResumeAdditions>    
 </root>

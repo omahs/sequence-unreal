@@ -2,7 +2,7 @@
 
 #if PLATFORM_ANDROID
 namespace AndroidOAuth {
-    void AndroidThunkCpp_RequestAuthCode(const FString& providerUrl, const FString& redirectScheme) 
+    void AndroidThunkCpp_RequestAuthCode(const FString& providerUrl) 
     {
         if (JNIEnv* jenv{FAndroidApplication::GetJavaEnv()})   
         {
@@ -10,16 +10,15 @@ namespace AndroidOAuth {
             jmethodID methodId{FJavaWrapper::FindStaticMethod(
                 jenv,
                 gameActivityClass, 
-                "AndroidThunkJava_RequestSequenceAuthCode", 
-                "(Ljava/lang/String;Ljava/lang/String;)V", 
+                "AndroidThunkJava_SequenceRequestAuthCode", 
+                "(Ljava/lang/String;)V", 
                 false
             )};
 
             jenv->CallStaticVoidMethod(
                 gameActivityClass, 
                 methodId, 
-                AndroidOAuth::ConvertToJavaString(jenv, providerUrl),
-                AndroidOAuth::ConvertToJavaString(jenv, redirectScheme)
+                AndroidOAuth::ConvertToJavaString(jenv, providerUrl)
             );
 
             jenv->DeleteLocalRef(gameActivityClass);
@@ -37,15 +36,15 @@ namespace AndroidOAuth {
     }
 }
 
-JNI_METHOD void Java_com_epicgames_unreal_GameActivity_onSequenceAuthCodeResponse(JNIEnv* jenv, jobject thiz, jstring jResponseUrl)
+JNI_METHOD void Java_com_epicgames_unreal_GameActivity_nativeSequenceHandleDeepLink(JNIEnv* jenv, jobject thiz, jstring jdeeplinkUrl)
 {
-    const char* responseUrlChars = jenv->GetStringUTFChars(jResponseUrl, 0);
+    const char* deeplinkUrlChars = jenv->GetStringUTFChars(jdeeplinkUrl, 0);
 
-    FString responseUrl;
-    responseUrl = FString(UTF8_TO_TCHAR(responseUrlChars));
+    FString deeplinkUrl;
+    deeplinkUrl = FString(UTF8_TO_TCHAR(deeplinkUrlChars));
 
-    jenv->ReleaseStringUTFChars(jResponseUrl, responseUrlChars);
+    jenv->ReleaseStringUTFChars(jdeeplinkUrl, deeplinkUrlChars);
 
-    UE_LOG(LogTemp, Warning, TEXT("NativeOAuth: redirect response url from java: %s"), *responseUrl);
+    UE_LOG(LogTemp, Warning, TEXT("NativeOAuth: deep link url from java: %s"), *deeplinkUrl);
 }
 #endif // PLATFORM_ANDROID
