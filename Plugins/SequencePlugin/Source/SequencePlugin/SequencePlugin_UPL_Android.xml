@@ -13,15 +13,21 @@
                             <action android:name="android.intent.action.VIEW" />
                             <category android:name="android.intent.category.DEFAULT" />
                             <category android:name="android.intent.category.BROWSABLE" />
-                            <data android:scheme="https"
-                                android:host="3d41-142-115-54-118.ngrok-free.app" 
-                                android:pathPrefix="/" />
+                            <data android:scheme="${sequenceRedirectScheme}.sequence.oauth" />
                         </intent-filter>
                     </addElements>
                 </true>
             </if>
         </loopElements>
     </androidManifestUpdates>
+
+    <buildGradleAdditions>
+        <insert>
+            android.defaultConfig.manifestPlaceholders = [
+                'sequenceRedirectScheme': PACKAGE_NAME
+            ]
+        </insert>
+    </buildGradleAdditions>
 
     <gameActivityImportAdditions>
         <insert>
@@ -34,8 +40,17 @@
         public native void nativeSequenceHandleDeepLink(String deepLinkUrl);
 
         public static void AndroidThunkJava_SequenceRequestAuth(String providerUrl) {
-            sequenceOpenCustomTab(providerUrl);
+            String finalUrl = sequenceAppendRedirectUriParamTo(providerUrl)
+            sequenceOpenCustomTab(finalUrl);
         }
+
+        private String sequenceAppendRedirectUriParamTo(String providerUrl) {
+            return providerUrl + "&amp;redirect_uri=" + sequenceGetRedirectUriScheme();
+        }
+
+        private String sequenceGetRedirectUriScheme() {
+            return getApplicationContext().getPackageName() + ".sequence.oauth";
+        }        
 
         private void sequenceOpenCustomTab(String url) {
             CustomTabsIntent customTabsIntent = new CustomTabsIntent.Builder().build();
