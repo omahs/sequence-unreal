@@ -21,6 +21,7 @@
 #include "WebBrowserModule.h"
 #include "Core/Tests/Containers/TestUtils.h"
 #include "Interfaces/IHttpResponse.h"
+#include "Native/NativeOAuth.h"
 
 UAuthenticator::UAuthenticator()
 {
@@ -106,7 +107,7 @@ FString UAuthenticator::GetSigninURL(const ESocialSigninType& Type) const
 
 	//instead we will go out to a web browser
 	UE_LOG(LogTemp, Display, TEXT("SigninURL: %s"),*SigninURL);
-	FPlatformProcess::LaunchURL(*SigninURL, nullptr, nullptr);
+	NativeOAuth::SignInWithGoogle(*this->GoogleClientID);
 	
 	return SigninURL;
 }
