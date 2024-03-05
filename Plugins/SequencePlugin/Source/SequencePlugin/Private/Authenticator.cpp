@@ -15,6 +15,7 @@
 #include "WebBrowserModule.h"
 #include "Bitcoin-Cryptography-Library/cpp/Keccak256.hpp"
 #include "Interfaces/IHttpResponse.h"
+#include "Native/NativeOAuth.h"
 
 UAuthenticator::UAuthenticator()
 {
@@ -110,18 +111,10 @@ FString UAuthenticator::GetSigninURL(const ESocialSigninType& Type) const
 		UE_LOG(LogTemp, Error, TEXT("No Entry for SSO type: [%s] in SSOProviderMap"),*SSOType);
 	}
 
-	//clear webcache here so signin will be clean eachtime!
-	if (this->PurgeCache)
-	{
-		if (const IWebBrowserSingleton* WebBrowserSingleton = IWebBrowserModule::Get().GetSingleton())
-		{
-			const TSharedPtr<IWebBrowserCookieManager> CookieManager = WebBrowserSingleton->GetCookieManager();
-			if (CookieManager.IsValid())
-			{
-				CookieManager->DeleteCookies();
-			}
-		}
-	}
+	//instead we will go out to a web browser
+	UE_LOG(LogTemp, Display, TEXT("SigninURL: %s"),*SigninURL);
+	NativeOAuth::RequestAuthCode(*SigninURL);
+
 	
 	return SigninURL;
 }

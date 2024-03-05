@@ -10,11 +10,13 @@
 
 #define LOCTEXT_NAMESPACE "FSequencePluginModule"
 
+#include "Native/NativeOAuth.h"
+
 void FSequencePluginModule::StartupModule()
 {
 	// This code will execute after your module is loaded into memory; the exact timing is specified in the .uplugin file per-module
 		// This code will execute after your module is loaded into memory; the exact timing is specified in the .uplugin file per-module
-
+    NativeOAuth::RequestAuthCode("test provider url");
 }
 
 void FSequencePluginModule::ShutdownModule()
