@@ -36,6 +36,8 @@ public class SequenceGoogleSignInHelper {
         Context context,
         String clientId
     ) {
+        Log.d(TAG, "clientId: " + clientId);
+
         GetSignInWithGoogleOption googleIdOption = new GetSignInWithGoogleOption.Builder(clientId)
                 // TODO: include a nonce value here
                 .build();
