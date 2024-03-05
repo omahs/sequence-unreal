@@ -68,5 +68,5 @@ import com.Plugins.SequencePlugin.SequenceOldGoogleSignInHelper;
         <insert>
         mSequenceOldGoogleSignInHelper.onActivityResult(requestCode, data);
         </insert>
-    <gameActivityOnActivityResultAdditions>
+    </gameActivityOnActivityResultAdditions>
 </root>
