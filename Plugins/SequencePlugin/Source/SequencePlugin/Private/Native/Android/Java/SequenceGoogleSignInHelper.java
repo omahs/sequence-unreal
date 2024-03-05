@@ -13,6 +13,7 @@ import androidx.credentials.GetCredentialRequest;
 import androidx.credentials.GetCredentialResponse;
 import androidx.credentials.exceptions.GetCredentialException;
 import androidx.credentials.exceptions.NoCredentialException;
+import androidx.credentials.exceptions.GetCredentialCustomException;
 
 import com.google.android.libraries.identity.googleid.GetSignInWithGoogleOption;
 import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential;
@@ -52,24 +53,32 @@ public class SequenceGoogleSignInHelper {
                 new CredentialManagerCallback<GetCredentialResponse, GetCredentialException>() {
                     @Override
                     public void onResult(GetCredentialResponse getCredentialResponse) {
+                        Log.d(TAG, "CredentialManagerCallback.onResult");
                         handleGetCredentialResponse(getCredentialResponse);
                     }
 
                     @Override
                     public void onError(@NonNull GetCredentialException e) {
                         Log.e(TAG, "Error getting credential", e);
+                        if (e instanceof GetCredentialCustomException) {
+                            GetCredentialCustomException customException = (GetCredentialCustomException) e;
+                            Log.e(TAG, "Custom Exception Type: " + customException.getType());
+                        }
                     }
                 }
         );
     }
 
     private static void handleGetCredentialResponse(GetCredentialResponse getCredentialResponse) {
+        Log.d(TAG, "handleGetCredentialResponse");
+
         Credential credential = getCredentialResponse.getCredential();
         if (credential instanceof CustomCredential &&
                 GoogleIdTokenCredential.TYPE_GOOGLE_ID_TOKEN_CREDENTIAL.equals(credential.getType())
         ) {
             try {
                 GoogleIdTokenCredential idTokenCredential = GoogleIdTokenCredential.createFrom(credential.getData());
+                Log.d(TAG, "id token: " + idTokenCredential.getIdToken());
                 GameActivity.sequenceGetInstance().nativeSequenceHandleGoogleIdToken(idTokenCredential.getIdToken());
             } catch (Exception e) {
                 Log.e(TAG, "Failed to parse Google ID token response", e);
