@@ -1,4 +1,5 @@
 #include "NativeOAuth.h"
+#include "MobileNativeCodeBlueprint.h"
 
 namespace NativeOAuth {
 	void RequestAuthCode(const FString& providerUrl)
