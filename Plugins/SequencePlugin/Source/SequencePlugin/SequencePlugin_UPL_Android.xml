@@ -16,6 +16,7 @@
     implementation "androidx.credentials:credentials:1.2.0"
     implementation "androidx.credentials:credentials-play-services-auth:1.2.0"
     implementation "com.google.android.libraries.identity.googleid:googleid:1.1.0"
+    implementation "com.google.android.gms:play-services-auth:21.0.0"
 }
         </insert>
     </buildGradleAdditions>
@@ -31,16 +32,18 @@
         
     <gameActivityImportAdditions>
         <insert>
-import com.Plugins.SequencePlugin.SequenceGoogleSignInHelper;
+import com.Plugins.SequencePlugin.SequenceOldGoogleSignInHelper;
         </insert>
     </gameActivityImportAdditions>        
 
     <gameActivityClassAdditions>
         <insert>
+    private SequenceOldGoogleSignInHelper mSequenceOldGoogleSignInHelper;
+
     public native void nativeSequenceHandleGoogleIdToken(String idToken);
 
     public static void AndroidThunkJava_SequenceSignInWithGoogle(String clientId) {
-        SequenceGoogleSignInHelper.signIn(GameActivity.sequenceGetInstance(), clientId);
+        mSequenceOldGoogleSignInHelper.signIn(GameActivity.sequenceGetInstance());
     }
 
     public static GameActivity sequenceGetInstance() {
@@ -48,4 +51,22 @@ import com.Plugins.SequencePlugin.SequenceGoogleSignInHelper;
     }
         </insert>
     </gameActivityClassAdditions>
+
+    <gameActivityOnCreateAdditions>
+        <insert>
+        mSequenceOldGoogleSignInHelper = new SequenceOldGoogleSignInHelper(this);
+        </insert>
+    </gameActivityOnCreateAdditions>
+
+    <gameActivityOnStartAdditions>
+        <insert>
+        mSequenceOldGoogleSignInHelper.onStartCheckIdToken(this);
+        </insert>
+    </gameActivityOnStartAdditions>
+
+    <gameActivityOnActivityResultAdditions>
+        <insert>
+        mSequenceOldGoogleSignInHelper.onActivityResult(requestCode, data);
+        </insert>
+    <gameActivityOnActivityResultAdditions>
 </root>
