@@ -3,10 +3,9 @@
 using System.IO;
 using UnrealBuildTool;
 
-public class IosAuthModule : ModuleRules
+public class IOSAuthModule : ModuleRules
 {
-
-	public IosAuthModule(ReadOnlyTargetRules Target) : base(Target)
+	public IOSAuthModule(ReadOnlyTargetRules Target) : base(Target)
 	{
 		Type = ModuleType.External;
 		if (Target.Platform == UnrealTargetPlatform.IOS)
