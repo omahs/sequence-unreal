@@ -57,7 +57,7 @@
         }
 
         private String sequenceGetRedirectUriScheme() {
-            return getApplicationContext().getPackageName() + ".sequence.oauth";
+            return getApplicationContext().getPackageName() + ".sequence.oauth:/oauth_callback";
         }        
 
         private void sequenceOpenCustomTab(String url) {
