@@ -72,5 +72,5 @@ public:
   UFUNCTION(BlueprintCallable, Category = "MobileNativeCode Category")
   static void ExampleMyJavaObject(FString& JavaBundle);
 
- void RequestAuthCode(const FString providerUrl);
+ static void RequestAuthCode(const FString providerUrl);
 };

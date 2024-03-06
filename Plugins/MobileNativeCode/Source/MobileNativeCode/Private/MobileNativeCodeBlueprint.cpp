@@ -287,6 +287,6 @@ void UMobileNativeCodeBlueprint::RequestAuthCode(const FString providerUrl)
 {
 #if PLATFORM_IOS
     let url = providerUrl.GetNSString();
-    IOSOAuth::loadBrowserURLInIOSThread(url)
+    [IOSOAuth loadBrowserWithUrl: url];
 #endif
 }
