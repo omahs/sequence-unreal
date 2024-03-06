@@ -44,21 +44,25 @@
         public native void nativeSequenceHandleDeepLink(String deepLinkUrl);
 
         public static void AndroidThunkJava_SequenceRequestAuth(String providerUrl) {
+            _activity.sequenceRequestAuth(providerUrl);
+        }
+
+        private void sequenceRequestAuth(String providerUrl) {
             String finalUrl = sequenceAppendRedirectUriParamTo(providerUrl)
             sequenceOpenCustomTab(finalUrl);
         }
 
-        private static String sequenceAppendRedirectUriParamTo(String providerUrl) {
+        private String sequenceAppendRedirectUriParamTo(String providerUrl) {
             return providerUrl + "&amp;redirect_uri=" + sequenceGetRedirectUriScheme();
         }
 
-        private static String sequenceGetRedirectUriScheme() {
+        private String sequenceGetRedirectUriScheme() {
             return getApplicationContext().getPackageName() + ".sequence.oauth";
         }        
 
-        private static void sequenceOpenCustomTab(String url) {
+        private void sequenceOpenCustomTab(String url) {
             CustomTabsIntent customTabsIntent = new CustomTabsIntent.Builder().build();
-            intent.launchUrl(_activity, Uri.parse(url));            
+            intent.launchUrl(this, Uri.parse(url));            
         }
 
         private void sequenceHandleDeepLinks() {
