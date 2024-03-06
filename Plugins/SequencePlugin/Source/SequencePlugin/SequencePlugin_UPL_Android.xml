@@ -48,7 +48,7 @@
         }
 
         private void sequenceRequestAuth(String providerUrl) {
-            String finalUrl = sequenceAppendRedirectUriParamTo(providerUrl)
+            String finalUrl = sequenceAppendRedirectUriParamTo(providerUrl);
             sequenceOpenCustomTab(finalUrl);
         }
 
