@@ -62,7 +62,7 @@
 
         private void sequenceOpenCustomTab(String url) {
             CustomTabsIntent customTabsIntent = new CustomTabsIntent.Builder().build();
-            intent.launchUrl(this, Uri.parse(url));            
+            customTabsIntent.launchUrl(this, Uri.parse(url));            
         }
 
         private void sequenceHandleDeepLinks() {
