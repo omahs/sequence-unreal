@@ -26,6 +26,10 @@
             android.defaultConfig.manifestPlaceholders = [
                 'sequenceRedirectScheme': PACKAGE_NAME
             ]
+
+            dependencies {
+                implementation "androidx.browser:browser:1.7.0"
+            }
         </insert>
     </buildGradleAdditions>
 
