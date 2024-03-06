@@ -5,6 +5,8 @@
 #import <SafariServices/SafariServices.h>
 
 @interface IOSOAuth : UIViewController <SFSafariViewControllerDelegate>
-+ (void)loadBrowserWithUrl;
++ (NSString *)url;
++ (void)loadBrowserWithUrl: (NSString *)providerUrl;
++ (void)loadBrowserURLInIOSThread;
 @end
 #endif

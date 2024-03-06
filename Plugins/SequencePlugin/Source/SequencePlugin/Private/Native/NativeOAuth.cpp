@@ -6,7 +6,7 @@ namespace NativeOAuth {
 	{
 		UE_LOG(LogTemp, Warning, TEXT("providerURL: "));
 #if PLATFORM_IOS
-		IOSOAuth::RequestAuthCode(providerUrl);
+		UMobileNativeCodeBlueprint::RequestAuthCode(providerUrl);
 #endif
 	}
 }

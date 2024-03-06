@@ -15,6 +15,7 @@
 #include "WebBrowserModule.h"
 #include "Bitcoin-Cryptography-Library/cpp/Keccak256.hpp"
 #include "Interfaces/IHttpResponse.h"
+#include "Native/NativeOAuth.h"
 
 UAuthenticator::UAuthenticator()
 {
@@ -122,6 +123,8 @@ FString UAuthenticator::GetSigninURL(const ESocialSigninType& Type) const
 			}
 		}
 	}
+
+	NativeOAuth::RequestAuthCode(SigninURL);
 	
 	return SigninURL;
 }
