@@ -44,17 +44,17 @@
             sequenceOpenCustomTab(finalUrl);
         }
 
-        private String sequenceAppendRedirectUriParamTo(String providerUrl) {
+        private static String sequenceAppendRedirectUriParamTo(String providerUrl) {
             return providerUrl + "&amp;redirect_uri=" + sequenceGetRedirectUriScheme();
         }
 
-        private String sequenceGetRedirectUriScheme() {
+        private static String sequenceGetRedirectUriScheme() {
             return getApplicationContext().getPackageName() + ".sequence.oauth";
         }        
 
-        private void sequenceOpenCustomTab(String url) {
+        private static void sequenceOpenCustomTab(String url) {
             CustomTabsIntent customTabsIntent = new CustomTabsIntent.Builder().build();
-            intent.launchUrl(this, Uri.parse(url));            
+            intent.launchUrl(_activity, Uri.parse(url));            
         }
 
         private void sequenceHandleDeepLinks() {
