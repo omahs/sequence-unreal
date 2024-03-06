@@ -139,7 +139,7 @@ FString UAuthenticator::GenerateSigninURL(const FString& AuthURL, const FString&
 
 	const FString StateParam = "{"+this->DeepLinkURLScheme+"\"---\""+StateToken+Method+"}";
 	
-	return AuthURL +"?response_type=id_token&client_id="+ ClientID +"&redirect_uri="+ this->RedirectURL +"&scope=openid+profile+email&state="+ StateParam +"&nonce="+ this->Nonce;
+	return AuthURL +"?response_type=id_token&client_id="+ ClientID +"&scope=openid+profile+email&state="+ StateParam +"&nonce="+ this->Nonce;
 }
 
 FString UAuthenticator::BuildAWSURL(const FString& Service, const FString& AWSRegion)
