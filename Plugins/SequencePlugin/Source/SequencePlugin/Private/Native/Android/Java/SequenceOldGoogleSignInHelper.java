@@ -1,5 +1,17 @@
 package com.Plugins.SequencePlugin;
 
+import android.app.Activity;
+import android.content.Context;
+import android.content.Intent;
+import android.util.Log;
+
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.common.api.ApiException;
+import com.google.android.gms.tasks.Task;
+
 public class SequenceOldGoogleSignInHelper {
     private static final String TAG = "SequenceGoogleSignIn";
 
@@ -19,8 +31,8 @@ public class SequenceOldGoogleSignInHelper {
         activity.startActivityForResult(intent, REQUEST_GOOGLE_SIGN_IN_OLD);
     }
 
-    public onStartCheckIdToken(Context context) {
-        GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(this);
+    public void onStartCheckIdToken(Context context) {
+        GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(context);
         if (account != null) {
             Log.d(TAG, "onStart id token: " + account.getIdToken());
         } else {
@@ -28,7 +40,7 @@ public class SequenceOldGoogleSignInHelper {
         }
     }
 
-    public onActivityResult(int requestCode, Intent data) {
+    public void onActivityResult(int requestCode, Intent data) {
         if (requestCode == REQUEST_GOOGLE_SIGN_IN_OLD) {
             Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
             try {

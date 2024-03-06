@@ -43,7 +43,11 @@ import com.Plugins.SequencePlugin.SequenceOldGoogleSignInHelper;
     public native void nativeSequenceHandleGoogleIdToken(String idToken);
 
     public static void AndroidThunkJava_SequenceSignInWithGoogle(String clientId) {
-        mSequenceOldGoogleSignInHelper.signIn(GameActivity.sequenceGetInstance());
+        GameActivity.sequenceGetInstance().sequenceSignInWithGoogle();
+    }
+
+    public void sequenceSignInWithGoogle() {
+        mSequenceOldGoogleSignInHelper.signIn(this);
     }
 
     public static GameActivity sequenceGetInstance() {
