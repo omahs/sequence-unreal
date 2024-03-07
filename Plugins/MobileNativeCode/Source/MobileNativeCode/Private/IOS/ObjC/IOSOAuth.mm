@@ -38,7 +38,6 @@ static NSString *url = @"https://www.google.com";
     NSURL *_url = [NSURL URLWithString:[IOSOAuth url]];
     NSLog(@"_url: %@", _url);
     NSString *redirectURlScheme = @"powered-by-sequence";
-    //redirectURlScheme = [redirectURlScheme stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLHostAllowedCharacterSet]];
     ASWebAuthenticationSession *authSessionAS = [[ASWebAuthenticationSession alloc]initWithURL:_url callbackURLScheme:redirectURlScheme completionHandler:^(NSURL * _Nullable callbackURL, NSError * _Nullable error) {
         NSLog(@"IN BROWSER CALLBACK");
         NSLog(@"CALLBACK URL: %@", callbackURL);
