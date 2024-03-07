@@ -1,6 +1,6 @@
 {
 	"FileVersion": 3,
-	"EngineAssociation": "5.1",
+	"EngineAssociation": "5.2",
 	"Category": "",
 	"Description": "",
 	"Modules": [
@@ -30,17 +30,15 @@
 			"Name": "SequencePlugin",
 			"Enabled": true,
 			"SupportedTargetPlatforms": [
-				"Win64",
-				"Android",
-				"IOS",
-				"Mac"
+				"IOS"
 			]
+		},
+		{
+			"Name": "MobileNativeCode",
+			"Enabled": true
 		}
 	],
 	"TargetPlatforms": [
-		"Windows",
-		"IOS",
-		"Android",
-		"Mac"
+		"IOS"
 	]
 }

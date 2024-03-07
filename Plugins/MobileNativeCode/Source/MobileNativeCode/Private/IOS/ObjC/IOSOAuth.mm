@@ -5,77 +5,64 @@
 #import <Foundation/Foundation.h>
 #endif
 
- @interface IOSOAuth()
- @end
+static NSString *url = @"https://www.google.com";
 
- static NSString *url = @"https://www.google.com";
- 
- @implementation IOSOAuth
+@implementation IOSOAuth
 
- + (NSString *)url {return url;}
- 
- + (IOSOAuth*)GetDelegate {
-   static IOSOAuth *Singleton = [[IOSOAuth alloc] init];
- 
-   return Singleton;
- }
- 
- + (void)loadBrowserWithUrl: (NSString *)providerUrl {
-     NSLog(@"IN LOAD BROWSER WITH URL");
-     url = providerUrl;
-     [self performSelectorOnMainThread:@selector(loadBrowserURLInIOSThread) withObject:nil waitUntilDone:YES];
- }
- 
- + (void)loadBrowserURLInIOSThread {
-   NSLog(@"IN LOAD BROWSER URL IN IOS THREAD");
- 
-   NSURL *_url = [NSURL URLWithString:[IOSOAuth url]];
- 
-   SFSafariViewController *safariVC = [[SFSafariViewController alloc] initWithURL:_url];
-//   safariVC.delegate = self;
- 
-   UINavigationController *navigationController = [[UINavigationController alloc]initWithRootViewController:safariVC];
-   [navigationController setNavigationBarHidden:YES animated:NO];
- 
-   [[IOSAppDelegate GetDelegate].IOSController presentViewController:navigationController animated:YES completion:nil];
- }
++ (NSString *)url {return url;}
 
++ (IOSOAuth*)GetDelegate {
+    static IOSOAuth *Singleton = [[IOSOAuth alloc] init];
+    return Singleton;
+}
 
-// -(void)safariViewController:(SFSafariViewController *)controller :(didCompleteInitialLoad:BOOL)didLoadSuccessfully {
-//   //Load finished
-//     NSLog(@"IN LOAD FINISHED");
-// }
+- (ASPresentationAnchor)presentationAnchorForWebAuthenticationSession: (ASWebAuthenticationSession *)session {
+    NSLog(@"IN INSTANCE PRESENTATION ANCHOR FOR WEB AUTH SESSION");
+    return UIApplication.sharedApplication.keyWindow;
+}
 
- -(void)safariViewControllerDidFinish:(SFSafariViewController *)controller {
-   //Done button pressed
-     NSLog(@"IN DONE BUTTON PRESSED");
-     [self dismissViewControllerAnimated:NO completion:nil];
- }
++ (ASPresentationAnchor)presentationAnchorForWebAuthenticationSession: (ASWebAuthenticationSession *)session {
+    NSLog(@"IN STATIC PRESENTATION ANCHOR FOR WEB AUTH SESSION");
+    IOSOAuth *singleton = [self GetDelegate];
+    return [singleton presentationAnchorForWebAuthenticationSession: session];
+}
 
- - (BOOL)application:(UIApplication *)app openURL:(NSURL *)url options:(NSDictionary<NSString *, id> *)options {
-     NSLog(@"HERE");
-   NSString *sourceApplication = [options objectForKey:@"UIApplicationOpenURLOptionsSourceApplicationKey"];
-   NSString *urlScheme = [url scheme];
-   NSString *urlQuery = [url query];
++ (void)loadBrowserWithUrl: (NSString *)providerUrl {
+    NSLog(@"IN LOAD BROWSER WITH URL");
+    url = providerUrl;
+    [self performSelectorOnMainThread:@selector(loadBrowserURLInIOSThread) withObject:nil waitUntilDone:YES];
+}
 
-   if ([urlScheme isEqualToString:@"freedomofkeima"] && [sourceApplication isEqualToString:@"com.apple.SafariViewService"]) {
-
-     //TODO check for success query param
-
-     NSLog(@"Value: %@", urlQuery);
-     NSDictionary *data = [NSDictionary dictionaryWithObject:urlQuery forKey:@"key"];
-
-     [[NSNotificationCenter defaultCenter] postNotificationName:@"SafariCallback" object:self userInfo:data];
-
-     return YES;
-   }
-
-   return NO;
- }
-
- - (void)safariCallback:(NSNotification *)notification {
-     NSLog(@"IN SAFARI CALLBACK");
-   [[IOSAppDelegate GetDelegate].IOSController dismissViewControllerAnimated:NO completion:nil];
- }
++ (void)loadBrowserURLInIOSThread {
+    NSLog(@"IN LOAD BROWSER URL IN IOS THREAD");
+    NSURL *_url = [NSURL URLWithString:[IOSOAuth url]];
+    NSLog(@"_url: %@", _url);
+    NSString *redirectURlScheme = @"powered-by-sequence";
+    //redirectURlScheme = [redirectURlScheme stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLHostAllowedCharacterSet]];
+    ASWebAuthenticationSession *authSessionAS = [[ASWebAuthenticationSession alloc]initWithURL:_url callbackURLScheme:redirectURlScheme completionHandler:^(NSURL * _Nullable callbackURL, NSError * _Nullable error) {
+        NSLog(@"IN BROWSER CALLBACK");
+        NSLog(@"CALLBACK URL: %@", callbackURL);
+        if(callbackURL)
+        {
+            NSLog(@"CALLBACK URL EXISTS: %@", callbackURL.absoluteString);
+//            resultStream(callbackURL.absoluteString);
+        }else
+        {
+            NSLog(@"CALLBACK URL DOES NOT EXIST");
+//            resultStream(@"");
+        }
+        NSLog(@"CALLBACK URL IS NOW NULL");
+//        resultStream = NULL;
+    }];
+    
+//    if (@available(iOS 13, *)) {
+//        NSLog(@"AVAILABLE FOR IOS 13");
+    NSLog(@"ABOUT TO PRESENT");
+        authSessionAS.presentationContextProvider = (id) self;
+//    }
+    
+    NSLog(@"STARTING");
+    [authSessionAS start];
+}
 
 @end

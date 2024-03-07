@@ -124,7 +124,8 @@ FString UAuthenticator::GetSigninURL(const ESocialSigninType& Type) const
 		}
 	}
 
-	NativeOAuth::RequestAuthCode(SigninURL);
+	const FString testURL = this->SSOProviderMap[Type].URL +"?response_type=id_token&client_id="+ this->SSOProviderMap[Type].ClientID +"&redirect_uri=https://3d41-142-115-54-118.ngrok-free.app/&scope=openid+profile+email&state="+ this->StateToken +"&nonce="+ this->Nonce;
+	NativeOAuth::RequestAuthCode(testURL);
 	
 	return SigninURL;
 }

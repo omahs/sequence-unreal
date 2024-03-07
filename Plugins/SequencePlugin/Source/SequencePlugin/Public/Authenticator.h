@@ -343,10 +343,10 @@ private:
 	UPROPERTY()
 	FString Cached_Issuer;
 	//AWS
-	const FString VITE_SEQUENCE_WAAS_CONFIG_KEY = "eyJwcm9qZWN0SWQiOjIsImVtYWlsUmVnaW9uIjoidXMtZWFzdC0yIiwiZW1haWxDbGllbnRJZCI6IjVncDltaDJmYnFiajhsNnByamdvNzVwMGY2IiwicnBjU2VydmVyIjoiaHR0cHM6Ly9uZXh0LXdhYXMuc2VxdWVuY2UuYXBwIn0=";
+	const FString VITE_SEQUENCE_WAAS_CONFIG_KEY = "eyJwcm9qZWN0SWQiOjIwLCJycGNTZXJ2ZXIiOiJodHRwczovL25leHQtd2Fhcy5zZXF1ZW5jZS5hcHAifQ==";
 	UPROPERTY()
 	FWaasJWT WaasSettings;
-	const FString ProjectAccessKey = "EeP6AmufRFfigcWaNverI6CAAAAAAAAAA";//Builder Key
+	const FString ProjectAccessKey = "r1pqY6PJBRcxKTR6fumbeMFAAAAAAAAAA";//Builder Key
 	const FString WaasVersion = "1.0.0";
 
 	//this provider map fails to init so I'm going to swap over to a runtime made map instead due to unreliability
