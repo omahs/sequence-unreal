@@ -43,8 +43,12 @@ import com.Plugins.SequencePlugin.SequenceGoogleSignInHelper;
         SequenceGoogleSignInHelper.signIn(GameActivity.sequenceGetInstance(), clientId, nonce);
     }
 
+    public static void AndroidThunkJava_SequenceClearGoogleSignInState() {
+        SequenceGoogleSignInHelper.clearState(GameActivity.sequenceGetInstance());
+    }
+
     // public static void AndroidThunkJava_SequenceLog(String message) {
-    //     SequenceGoogleSignInHelper.log(message);
+    //    SequenceGoogleSignInHelper.log(message);
     // }
 
     public static GameActivity sequenceGetInstance() {

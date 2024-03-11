@@ -58,6 +58,28 @@ namespace NativeOAuth
     		}
     	}
 
+        void AndroidThunkCpp_ClearGoogleSignInState()
+        {
+    		if (JNIEnv* jenv{FAndroidApplication::GetJavaEnv()})   
+    		{
+    			jclass gameActivityClass{FAndroidApplication::FindJavaClass("com/epicgames/unreal/GameActivity")};
+    			jmethodID methodId{FJavaWrapper::FindStaticMethod(
+					jenv,
+					gameActivityClass, 
+					"AndroidThunkJava_SequenceClearGoogleSignInState", 
+					"()V", 
+					false
+				)};
+
+    			jenv->CallStaticVoidMethod(
+					gameActivityClass, 
+					methodId
+				);
+
+    			jenv->DeleteLocalRef(gameActivityClass);
+    		}            
+        }        
+
     	jstring ConvertToJavaString(JNIEnv* jenv, const FString& string) 
     	{
     		const jstring localString = jenv->NewStringUTF(TCHAR_TO_UTF8(*string));

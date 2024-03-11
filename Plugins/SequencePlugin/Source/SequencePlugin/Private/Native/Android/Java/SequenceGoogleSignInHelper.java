@@ -9,11 +9,13 @@ import androidx.credentials.Credential;
 import androidx.credentials.CredentialManager;
 import androidx.credentials.CredentialManagerCallback;
 import androidx.credentials.CustomCredential;
+import androidx.credentials.ClearCredentialStateRequest;
 import androidx.credentials.GetCredentialRequest;
 import androidx.credentials.GetCredentialResponse;
 import androidx.credentials.exceptions.GetCredentialException;
 import androidx.credentials.exceptions.NoCredentialException;
 import androidx.credentials.exceptions.GetCredentialCustomException;
+import androidx.credentials.exceptions.ClearCredentialException;
 
 import com.google.android.libraries.identity.googleid.GetSignInWithGoogleOption;
 import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential;
@@ -68,6 +70,26 @@ public class SequenceGoogleSignInHelper {
                     }
                 }
         );
+    }
+
+    public static void clearState(Context context) {
+        CredentialManager credentialManager = CredentialManager.create(context);
+        credentialManager.clearCredentialStateAsync(
+                new ClearCredentialStateRequest(),
+                null,
+                Executors.newSingleThreadExecutor(),
+                new CredentialManagerCallback<Void, ClearCredentialException>() {
+                    @Override
+                    public void onResult(Void unused) {
+                        Log.d(TAG, "Google Sign-In state cleared");
+                    }
+
+                    @Override
+                    public void onError(@NonNull ClearCredentialException e) {
+                        // Log.e(TAG, "Error clearing Google Sign-In state", e);
+                    }
+                }
+        );        
     }
 
     private static void handleGetCredentialResponse(GetCredentialResponse getCredentialResponse) {
