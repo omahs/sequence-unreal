@@ -34,6 +34,10 @@
 		{
 			"Name": "WebBrowserWidget",
 			"Enabled": true
+		},
+		{
+			"Name": "MobileNativeCode",
+			"Enabled": true
 		}
 	],
 	"TargetPlatforms": [
