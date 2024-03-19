@@ -103,6 +103,10 @@ void UAuthenticator::InitiateMobileSSO(const ESocialSigninType& Type)
 #if PLATFORM_ANDROID
 	NativeOAuth::SignInWithGoogle(FAuthenticatorConfig::GoogleClientID,this->Nonce,this);
 #endif
+	//For Signin with Apple (temp)
+#if PLATFORM_IOS
+	NativeOAuth::SignInWithApple(FAuthenticatorConfig::AppleAuthURL,this->Nonce,this);
+#endif
 }
 
 FString UAuthenticator::GetSigninURL(const ESocialSigninType& Type)

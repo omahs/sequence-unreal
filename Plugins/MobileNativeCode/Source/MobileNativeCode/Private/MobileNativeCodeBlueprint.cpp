@@ -6,6 +6,7 @@
 #include <iostream>
 #include <string>
 #include <sstream>
+#include <functional>
 
 using namespace std;
 
@@ -283,10 +284,13 @@ void UMobileNativeCodeBlueprint::ExampleMyJavaObject(FString& JavaBundle)
 #endif //Android
 }
 
-void UMobileNativeCodeBlueprint::RequestAuthCode(const FString providerUrl)
+void UMobileNativeCodeBlueprint::GetIdToken(const FString providerUrl, void(*Callback)(char *idToken)) 
 {
 #if PLATFORM_IOS
     let url = providerUrl.GetNSString();
-    [IOSOAuth loadBrowserWithUrl: url];
+    IOSOAuth *auth = [[IOSOAuth alloc] init];
+    [auth loadBrowserWithUrl:url callback:^(char *idToken){
+        Callback(idToken);
+    }];
 #endif
 }

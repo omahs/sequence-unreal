@@ -3,65 +3,92 @@
 #if PLATFORM_IOS
 #include "IOSAppDelegate.h"
 #import <Foundation/Foundation.h>
+#import <AuthenticationServices/AuthenticationServices.h>
 #endif
 
-static NSString *url = @"https://www.google.com";
+static NSString *url = @"";
+static NSString *userId = @"";
+static Callback completion = ^(char *idToken) {};
+
+typedef void(^Callback)(char *idToken);
 
 @implementation IOSOAuth
 
 + (NSString *)url {return url;}
++ (NSString *)userId {return userId;}
++ (Callback)completion {return completion;}
 
 + (IOSOAuth*)GetDelegate {
     static IOSOAuth *Singleton = [[IOSOAuth alloc] init];
     return Singleton;
 }
 
-- (ASPresentationAnchor)presentationAnchorForWebAuthenticationSession: (ASWebAuthenticationSession *)session {
-    NSLog(@"IN INSTANCE PRESENTATION ANCHOR FOR WEB AUTH SESSION");
+- (ASPresentationAnchor)presentationAnchorForAuthorizationController:(ASAuthorizationController *)controller {
     return UIApplication.sharedApplication.keyWindow;
 }
 
-+ (ASPresentationAnchor)presentationAnchorForWebAuthenticationSession: (ASWebAuthenticationSession *)session {
-    NSLog(@"IN STATIC PRESENTATION ANCHOR FOR WEB AUTH SESSION");
-    IOSOAuth *singleton = [self GetDelegate];
-    return [singleton presentationAnchorForWebAuthenticationSession: session];
-}
-
-+ (void)loadBrowserWithUrl: (NSString *)providerUrl {
-    NSLog(@"IN LOAD BROWSER WITH URL");
+- (void)loadBrowserWithUrl: (NSString *)providerUrl callback:(void(^)(char *))callback {
     url = providerUrl;
-    [self performSelectorOnMainThread:@selector(loadBrowserURLInIOSThread) withObject:nil waitUntilDone:YES];
+    [[IOSOAuth GetDelegate] loadBrowserURLInIOSThread];
 }
 
-+ (void)loadBrowserURLInIOSThread {
-    NSLog(@"IN LOAD BROWSER URL IN IOS THREAD");
+- (void)loadBrowserURLInIOSThread {
     NSURL *_url = [NSURL URLWithString:[IOSOAuth url]];
-    NSLog(@"_url: %@", _url);
-    NSString *redirectURlScheme = @"powered-by-sequence";
-    ASWebAuthenticationSession *authSessionAS = [[ASWebAuthenticationSession alloc]initWithURL:_url callbackURLScheme:redirectURlScheme completionHandler:^(NSURL * _Nullable callbackURL, NSError * _Nullable error) {
-        NSLog(@"IN BROWSER CALLBACK");
-        NSLog(@"CALLBACK URL: %@", callbackURL);
-        if(callbackURL)
-        {
-            NSLog(@"CALLBACK URL EXISTS: %@", callbackURL.absoluteString);
-//            resultStream(callbackURL.absoluteString);
-        }else
-        {
-            NSLog(@"CALLBACK URL DOES NOT EXIST");
-//            resultStream(@"");
-        }
-        NSLog(@"CALLBACK URL IS NOW NULL");
-//        resultStream = NULL;
-    }];
     
-//    if (@available(iOS 13, *)) {
-//        NSLog(@"AVAILABLE FOR IOS 13");
-    NSLog(@"ABOUT TO PRESENT");
-        authSessionAS.presentationContextProvider = (id) self;
-//    }
+    ASAuthorizationAppleIDProvider *appleIDProvider = [ASAuthorizationAppleIDProvider new];
+    ASAuthorizationAppleIDRequest *request = appleIDProvider.createRequest;
+    request.requestedScopes = @[ASAuthorizationScopeFullName, ASAuthorizationScopeEmail];
+    ASAuthorizationController *controller = [[ASAuthorizationController alloc] initWithAuthorizationRequests:@[request]];
     
-    NSLog(@"STARTING");
-    [authSessionAS start];
+    controller.delegate = self;
+    controller.presentationContextProvider = self;
+    
+    [controller performRequests];
 }
 
+- (void)authorizationController:(ASAuthorizationController *)controller didCompleteWithAuthorization:(ASAuthorization *)authorization {
+    if ([authorization.credential isKindOfClass:[ASAuthorizationAppleIDCredential class]]) {
+        ASAuthorizationAppleIDCredential *appleIDCredential = authorization.credential;
+        NSString *user = appleIDCredential.user;
+        
+        char *idToken = [[IOSOAuth GetDelegate] ConvertNSStringToChars:appleIDCredential.user];
+        completion(idToken);
+    }
+}
+
+- (void)authorizationController:(ASAuthorizationController *)controller didCompleteWithError:(NSError *)error {
+    NSString *errorMsg = nil;
+    switch (error.code) {
+        case ASAuthorizationErrorCanceled:
+            errorMsg = @"ASAuthorizationErrorCanceled";
+            break;
+        case ASAuthorizationErrorFailed:
+            errorMsg = @"ASAuthorizationErrorFailed";
+            break;
+        case ASAuthorizationErrorInvalidResponse:
+            errorMsg = @"ASAuthorizationErrorInvalidResponse";
+            break;
+        case ASAuthorizationErrorNotHandled:
+            errorMsg = @"ASAuthorizationErrorNotHandled";
+            break;
+        case ASAuthorizationErrorUnknown:
+            errorMsg = @"ASAuthorizationErrorUnknown";
+            break;
+    }
+    
+    if (errorMsg) {
+        NSLog(@"errorMsg: %@", errorMsg);
+        return;
+    }
+}
+
+- (void)dealloc {
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:ASAuthorizationAppleIDProviderCredentialRevokedNotification object:nil];
+    [super dealloc];
+}
+
+- (char *)ConvertNSStringToChars:(NSString *)str {
+    const char *strChars = [str UTF8String];
+    return (char*)strChars;
+}
 @end

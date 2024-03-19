@@ -1,6 +1,10 @@
 #include "NativeOAuth.h"
 #include "Authenticator.h"
 
+// #if PLATFORM_IOS
+#include "MobileNativeCodeBlueprint.h"
+// #endif
+
 namespace NativeOAuth
 {
     void SignInWithGoogle(const FString& clientId, const FString& nonce, UAuthenticator * AuthCallback)
@@ -9,6 +13,18 @@ namespace NativeOAuth
         #if PLATFORM_ANDROID
         AndroidThunkCpp_SignInWithGoogle(clientId, nonce);
         #endif // PLATFORM_ANDROID
+    }
+	void SignInWithApple(const FString& providerUrl, const FString& nonce, UAuthenticator * AuthCallback)
+    {
+    	Callback = AuthCallback;
+		#if PLATFORM_IOS
+    	FString url = providerUrl + "&nonce=" + nonce;
+    	UMobileNativeCodeBlueprint::GetIdToken(url,[](char *idToken){
+    		FString token = FString(UTF8_TO_TCHAR(idToken));
+    		UE_LOG(LogTemp, Warning, TEXT("idToken back to signin: %s"), *token);
+    		Callback->SocialLogin(token);
+    	});
+		#endif
     }
 #if PLATFORM_ANDROID
         void AndroidLog(const FString& message) {
