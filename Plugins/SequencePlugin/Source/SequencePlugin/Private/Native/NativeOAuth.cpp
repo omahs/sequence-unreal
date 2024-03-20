@@ -21,7 +21,6 @@ namespace NativeOAuth
     	FString url = providerUrl + "&nonce=" + nonce;
     	UMobileNativeCodeBlueprint::GetIdToken(url,[](char *idToken){
     		FString token = FString(UTF8_TO_TCHAR(idToken));
-    		UE_LOG(LogTemp, Warning, TEXT("idToken back to signin: %s"), *token);
     		Callback->SocialLogin(token);
     	});
 		#endif

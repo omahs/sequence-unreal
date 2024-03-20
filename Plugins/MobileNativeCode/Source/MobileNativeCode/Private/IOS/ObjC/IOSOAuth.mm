@@ -29,6 +29,7 @@ typedef void(^Callback)(char *idToken);
 
 - (void)loadBrowserWithUrl: (NSString *)providerUrl callback:(void(^)(char *))callback {
     url = providerUrl;
+    completion = [callback copy];
     [[IOSOAuth GetDelegate] loadBrowserURLInIOSThread];
 }
 
