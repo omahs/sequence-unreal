@@ -15,6 +15,9 @@ import android.webkit.WebResourceRequest;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
+
 import com.epicgames.unreal.GameActivity;
 
 public class SequenceWebViewAuth {
@@ -43,10 +46,13 @@ public class SequenceWebViewAuth {
         webView.setHorizontalScrollBarEnabled(false);
         webView.getSettings().setJavaScriptEnabled(true);
 
+        Executor executor = Executors.newSingleThreadExecutor();
         Client client = new Client(
                 redirectUrl,
                 redirect -> {
-                    GameActivity.sequenceGetInstance().nativeSequenceHandleRedirectUrl(redirect);
+                    executor.execute(() -> {
+                        GameActivity.sequenceGetInstance().nativeSequenceHandleRedirectUrl(redirect);
+                    });
                     dialog.dismiss();
                 }
         );
