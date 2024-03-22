@@ -121,7 +121,10 @@ JNI_METHOD void Java_com_epicgames_unreal_GameActivity_nativeSequenceHandleRedir
     {
     	const char* redirectUrlChars = jenv->GetStringUTFChars(jRedirectUrl, 0);
     	FString redirectUrl = FString(UTF8_TO_TCHAR(redirectUrlChars));
-		Callback->UpdateMobileLogin(redirectUrl);
+		UAuthenticator * CallbackLcl = Callback;
+		AsyncTask(ENamedThreads::GameThread, [CallbackLcl,redirectUrl]() {
+			CallbackLcl->UpdateMobileLogin(redirectUrl);
+		});
 		jenv->ReleaseStringUTFChars(jRedirectUrl, redirectUrlChars);
     }
 #endif // PLATFORM_ANDROID
